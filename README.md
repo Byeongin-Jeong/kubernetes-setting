@@ -5,15 +5,19 @@
 ### 1. k8s 서버 세팅
 
 #### 1) docker 설치
+##### 실행 범위 : Master, Worker
 ```
 sudo ./dockerCE_install_ubuntu.sh
 ```
 #### 2) k8s 설치
+##### 실행 범위 : Master, Worker
 ```
 sudo ./k8s_common_install_ubuntu.sh
 ```
 #### 3) k8s master 설정 및 클러스터 구성
-- Master를 worker mode로 사용시 주석 해제 또는 명령어 실행\
+##### 실행 범위 : Master
+- Master Cluster 구성시 Proxy 서버 IP 등록 필요!!
+- Master를 worker mode(고가용성)로 사용시 주석 해제 또는 명령어 실행\
 **kubectl taint nodes --all node-role.kubernetes.io/master-**
 ```
 sudo ./k8s_master_set_ubuntu.sh
@@ -24,6 +28,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 #### 4) worker Node Join
+##### 실행 범위 : Worker
 - master 설정 후 출력된 토큰 정보를 입력
 - master 클러스터링시 나오는 결과는 조금 다를 수 있다.
 ```
@@ -33,6 +38,7 @@ ex) sudo kubeadm join 192.168.102.111:6443 --token uifaqn.c8lsjrqts493mw7u \
 
 ---------------------------------------
 ### 2. k8s 컨테이터 설정
+#### 사용자에 따라서 필요한 컨테이너만 구동 (단, 샘플 파일에는 네임스페이스가 지정되어 있으니 필수 확인!!)
 #### 1. namespace 구성
 ```
 sudo kubectl apply -f namespace.yaml
