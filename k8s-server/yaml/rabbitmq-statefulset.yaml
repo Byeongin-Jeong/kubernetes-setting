@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: k8s-test
+  name: rabbitmq
+spec:
+  replicas: 1
+  serviceName: rabbitmq
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: "rabbit"               # user id
+        - name: RABBITMQ_DEFAULT_PASS
+          value: "rabbit"               # user pwd
+        #- name: RABBITMQ_ERLANG_COOKIE
+        #  value: "1WqgH8N2v1qDBDZDbNy8Bg9IkPWLEpu79m6q+0t36lQ="
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+        - name: tz-seoul
+          mountPath: /etc/localtime
+      volumes:
+        #- name: rabbitmq-data
+        #  hostPath:
+        #    path: /data/rabbitmq
+        #    type: DirectoryOrCreate
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul

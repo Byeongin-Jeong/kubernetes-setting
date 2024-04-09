@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: k8s-test
+  name: rabbitmq-management   # 웹 접속용 서비스
+  labels:
+    app: rabbitmq
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+  - port: 15672
+    #name: http
+    targetPort: 15672
+  #externalIPs:
+  #  - 34.22.77.106 # your IP
+  #type: LoadBalancer
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: k8s-test
+  name: rabbitmq            # 내부용 서비스
+  labels:
+    app: rabbitmq
+spec:
+  ports:
+  - port: 5672
+    name: amqp
+    targetPort: 5672
+  - port: 4369
+    name: epmd
+  - port: 25672
+    name: rabbitmq-dist
+  selector:
+    app: rabbitmq
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: k8s-test
+  name: rabbitmq-local-svc    # 외부용 서비스
+  labels:
+    app: rabbitmq-local-svc
+spec:
+  ports:
+  - port: 5672
+    name: amqp
+    targetPort: 5672
+  - port: 15672
+    name: http
+    targetPort: 15672
+  selector:
+    app: rabbitmq
+  type: NodePort
