@@ -31,11 +31,21 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 echo " "
 
-# 3. Install Flannel
-echo "################# Install Flannel #################"
-echo " "
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-echo " "
+# 3. Exist Config File & Install Flannel
+if [ -f $HOME/.kube/config ]; then
+    echo "################# Install Flannel #################"
+    echo " "
+    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    echo " "
+else
+    echo "$HOME/.kube/config does not exist."
+    echo " "
+    echo "################# Type the command #################"
+    echo mkdir -p $HOME/.kube
+    echo sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    echo sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    echo kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+fi
 
 # Master Clustering 후 Worker 기능 사용시에 주석 해제
 # 4. taint disabled
